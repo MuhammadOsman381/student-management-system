@@ -21,6 +21,17 @@ const CreateUsers = () => {
     e.preventDefault();
   }
 
+  const modifyUserName = (subjectName) => {
+    const nameParts = subjectName.toLowerCase().split(" ");
+    const modifiedSubjectName = nameParts
+      .map((part) => {
+        return part.charAt(0).toUpperCase() + part.slice(1);
+      })
+      .join(" ");
+
+    setName(modifiedSubjectName);
+  };
+
   const addData = () => {
     console.log(name, email, password);
     axios
@@ -82,16 +93,16 @@ const CreateUsers = () => {
 
   useEffect(() => {
     getUsers();
-  }, [refresher]);
+  }, []);
 
   return (
     <>
       {addTeacherSubjectDisplay === true ? (
-        <AddTeachersSubject id={teacherID} />
+        <AddTeachersSubject userid={teacherID} />
       ) : (
         <div className=" max-sm:mt-[10vh] max-lg:mt-[80px]   w-[100%] max-lg:w-[100%]  mt-[4.5vw]   flex flex-col flex-wrap items-center justify-center gap-[2vw]">
           <div class=" w-[100%]   rounded-lg flex flex-col items-center justify-center light">
-            <div class="border-t-[7px] max-lg:w-[100%] w-[70%] max-sm:w-[100%]  bg-white rounded-lg shadow-md p-6">
+            <div class="border-t-[7px] max-lg:w-[100%] w-[60%] max-sm:w-[100%]  bg-white rounded-lg shadow-md p-6">
               <h2 class="text-2xl font-bold text-gray-800 mb-4">
                 Add Teachers
               </h2>
@@ -102,7 +113,7 @@ const CreateUsers = () => {
                   class="bg-gray-100 text-gray-800 border-0 rounded-md p-2 mb-4 focus:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
                   placeholder="Enter name"
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  onChange={(e) => modifyUserName(e.target.value)}
                 />
                 <input
                   type="email"
@@ -132,7 +143,7 @@ const CreateUsers = () => {
             </div>
           </div>
 
-          <div className=" w-[70%] max-lg:w-[100%] max-sm:w-[100%]">
+          <div className=" w-[60%] max-lg:w-[100%] max-sm:w-[100%]">
             <div className="  text-gray-900  bg-gray-200 rounded-lg">
               <div className="p-4 flex ">
                 <h1 className="text-3xl">Teachers</h1>

@@ -10,7 +10,7 @@ const CreateStudents = () => {
   const [id, setID] = useState();
   const [name, setName] = useState("");
   const [studentID, setStudentID] = useState("");
-  const [yearOptions, setYearOptions] = useState([]);
+  const [yearOptions, setYearOptions] = useState(null);
   const [subjectOptions, setSubjectOptions] = useState([]);
   const [subjectArray, setSubjectArray] = useState([]);
   const [year, setYear] = useState("");
@@ -39,7 +39,13 @@ const CreateStudents = () => {
     axios
       .get("/api/v2/subject/get")
       .then((response) => {
-        setValues(response.data.subjects);
+        console.log(response.data.subjects)
+        const subTempArray = []
+        response.data.subjects.map((items)=>{
+          subTempArray.push( { value: items.subject , label: items.subject  },)
+           return subTempArray
+        })
+        setSubjectOptions(subTempArray)
       })
       .catch((error) => {
         console.log(error);
@@ -61,38 +67,38 @@ const CreateStudents = () => {
     setYear(selectedOption.value);
   };
 
-  const setValues = (value) => {
-    const processedSubjects = value.map((a) => {
-      const trimmedSubject = a.subject.trim().toLowerCase();
-      return trimmedSubject.charAt(0).toUpperCase() + trimmedSubject.slice(1);
+  
+  const getYearData = () =>{
+    axios
+    .get("/api/v2/year/get")
+    .then((response) => {
+      // console.log(response.data.years)
+      const yearTempArray = []
+      response.data.years.map((items)=>{
+         yearTempArray.push( { value: items.year , label: items.year  },)
+         return yearTempArray
+      })
+      setYearOptions(yearTempArray)
+    })
+    .catch((error) => {
+      console.log(error);
     });
-    const uniqueSubjects = Array.from(new Set(processedSubjects));
-    const uniqueSubjectDataArray = uniqueSubjects.map((subject) => {
-      return { value: subject, label: subject };
-    });
-    setSubjectOptions(uniqueSubjectDataArray);
+  }
 
-    const processedYear = value.map((a) => {
-      const trimmedYear = a.year.trim();
-      return trimmedYear;
-    });
-    const uniqueYear = Array.from(new Set(processedYear));
-    const uniqueYearDataArray = uniqueYear.map((year) => {
-      return { value: year, label: year };
-    });
-    setYearOptions(uniqueYearDataArray);
-  };
 
   const getSubject = (e) => {
     const selectedSubjectData = e.map((items) => {
       const selectedSubject = items.value;
       return selectedSubject;
     });
+    // console.log(selectedSubjectData)
     setSubjectArray(selectedSubjectData);
   };
 
+
+
   useEffect(() => {
-    console.log("hello i am refreshed");
+    getYearData()
     getSubjectsData();
     getStudents();
   }, [refresher]);
@@ -136,6 +142,7 @@ const CreateStudents = () => {
   };
 
   const addSubjectsAndStudents = () => {
+    console.log(year)
     axios
       .post("/api/v2/student/add", {
         subjectArray,
@@ -163,7 +170,7 @@ const CreateStudents = () => {
       {!editSubjectDisplay ? (
         <div className="w-[100%] mt-[4.5vw] max-lg:mt-[18vw] max-sm:mt-[11vh] ">
           <div className=" w-[100%] flex flex-col items-center justify-center gap-2 light">
-            <div className=" border-t-[7px] w-[70%] bg-white rounded-lg shadow-md p-6">
+            <div className=" border-t-[7px] w-[60%] bg-white rounded-lg shadow-md p-6">
               <h2 className="text-2xl font-bold text-gray-800 mb-4">
                 Add Students
               </h2>
@@ -224,7 +231,7 @@ const CreateStudents = () => {
               </form>
             </div>
             {/* --------------------------------------------------------------------------------------------------------------- */}
-            <div className=" max-lg:w-full w-[70%] max-sm:w-[100%] text-gray-900  bg-gray-200 rounded-lg">
+            <div className=" max-lg:w-full w-[60%] max-sm:w-[100%] text-gray-900  bg-gray-200 rounded-lg">
               <div className="p-4 flex ">
                 <h1 className="text-3xl">Subjects</h1>
               </div>
@@ -294,7 +301,7 @@ const CreateStudents = () => {
           <div class=" w-[100%]   rounded-lg flex flex-col items-center justify-center light">
             <div class="border-t-[7px] max-lg:w-[100%] w-[70%] max-sm:w-[100%]  bg-white rounded-lg shadow-md p-6">
               <h2 class="text-2xl font-bold text-gray-800 mb-4">
-                Add Teachers
+                Edit Student
               </h2>
 
               <form class=" flex flex-col" onSubmit={submitHandler}>

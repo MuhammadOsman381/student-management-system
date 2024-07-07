@@ -315,7 +315,7 @@ const Subjects = () => {
       </div>
 
 
-      <div className="border  max-lg:w-[100%] max-sm:flex max-sm:flex-col max-sm:items-center max-sm:justify-center  w-[60%] max-sm:w-[100%] text-gray-900  bg-gray-200 rounded-lg">
+      <div className="border  max-lg:w-[100%] max-sm:flex max-sm:flex-col max-sm:items-center max-sm:justify-center  w-[50%] max-sm:w-[100%] text-gray-900  bg-gray-200 rounded-lg">
         <div className="p-4 flex max-sm:w-full ">
           <h1 className="text-3xl">Subjects</h1>
         </div>
@@ -394,7 +394,7 @@ const Subjects = () => {
         </div>
       </div>
 
-      <div className="border  max-lg:w-[100%] max-sm:flex max-sm:flex-col max-sm:items-center max-sm:justify-center  w-[60%] max-sm:w-[100%] text-gray-900  bg-gray-200 rounded-lg">
+      <div className="border  max-lg:w-[100%] max-sm:flex max-sm:flex-col max-sm:items-center max-sm:justify-center  w-[50%] max-sm:w-[100%] text-gray-900  bg-gray-200 rounded-lg">
         <div className="p-4 flex max-sm:w-full ">
           <h1 className="text-3xl">Year</h1>
         </div>

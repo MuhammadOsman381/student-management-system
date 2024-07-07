@@ -69,7 +69,7 @@ const register = async (req, res) => {
       email,
       password: encryptedPassword,
       subjects: allSubjects._id,
-      userType: false,
+      userType: true,
     });
     await newUser.save();
     // Generate token and send response
@@ -124,28 +124,43 @@ const getUsers = async (req, res) => {
 };
 
 const deleteUser = async (req, res) => {
-  const users = await User.findById(req.params.id);
+  const userId = req.params.id;
   try {
-    if (!users) {
-      return (
-        res.status(404),
-        json({
-          success: false,
-          message: "user not found",
-        })
-      );
+    // Find and process teacher-subject associations related to the user
+    const userSubjectsArray = await TeachersSubjects.find({
+      teacherID: userId,
+    });
+    const subjectIds = userSubjectsArray.map((sub) => sub._id);
+
+    // Delete user-subject associations if needed
+    // For example, if you need to delete all associated subjects for the user
+    await TeachersSubjects.deleteMany({ teacherID: userId });
+
+    // Find the user by ID
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
     }
 
-    await users.deleteOne();
+    // Delete the user
+    await user.deleteOne();
+
     return res.status(200).json({
-      message: "user deleted successfully!",
       success: true,
-      user: users,
+      message: "User deleted successfully!",
+      user: user,
+      deletedSubjects: subjectIds, // Optionally, include deleted subject IDs
     });
   } catch (error) {
-    res.status(500).json({
+    console.error("Error deleting user:", error);
+    return res.status(500).json({
       success: false,
-      message: "Internal server issue",
+      message: "Internal server error",
+      error: error.message, // Optionally, include error message for debugging
     });
   }
 };

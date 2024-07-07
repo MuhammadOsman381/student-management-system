@@ -3,15 +3,15 @@ import toast, { Toaster } from "react-hot-toast";
 import Login from "./pages/login";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AdminDashboard from "./admin/adminDashboard";
-import UserDashboard from "./users/userDashboard";
+import UserDashboard from "./users/userLayout";
 import AdminSideBar from "./admin/adminLayout";
 import CreateUsers from "./admin/Teachers/createUsers";
 import CreateStudents from "./admin/Students/createStudents";
-import EditUser from "./admin/Teachers/addTeachersSubject";
 import AllUsers from "./admin/Teachers/AllUsers";
 import Subjects from "./admin/subjects";
 import AddTeachersSubject from "./admin/Teachers/addTeachersSubject";
 import AllStudents from "./admin/Students/AllStudents";
+import AddMarks from "./users/AddMarks";
 
 function App() {
   return (
@@ -36,7 +36,10 @@ function App() {
             <Route path="/admin/subjects" element={<Subjects />} />
           </Route>
 
-          <Route path="/user" element={<UserDashboard />}></Route>
+          <Route path="/user" element={<UserDashboard />}>
+          <Route path="/user/all-students" element={<AllStudents />} />
+          <Route path="/user/add-marks" element={<AddMarks />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </>

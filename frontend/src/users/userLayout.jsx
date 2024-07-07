@@ -1,8 +1,10 @@
+
 import { Link, Outlet } from "react-router-dom";
 import React, { useState } from "react";
 import logo from '../../public/WhatsApp Image 2024-06-30 at 3.20.11 PM.jpeg'
 
-const AdminSideBar = () => {
+const UserDashboard = () => {
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleNavbar = () => {
@@ -73,76 +75,20 @@ const AdminSideBar = () => {
       >
         <div className=" h-full px-3 pb-4 overflow-y-auto bg-gray-100  ">
           <ul className="space-y-2 font-medium">
-            <li
-              onClick={secondToggleNavbar}
-              className="flex items-center p-2  rounded-lg text-black hover:bg-gray-600  group"
-            >
-              <Link to={"/admin/dashboard"}>
-                <span className="ms-3">Dashboard</span>
-              </Link>
-            </li>
             <li onClick={secondToggleNavbar}>
               <Link
-                to={"/admin/subjects"}
+                to={"/user/add-marks"}
                 className="flex items-center p-2  rounded-lg text-black hover:bg-gray-600  group"
               >
-                <span className="ms-3">Subject Template</span>
+                <span className="ms-3">Add Marks</span>
               </Link>
             </li>
             <li onClick={secondToggleNavbar}>
               <Link
-                to={"/admin/subjects"}
-                className="flex items-center p-2  rounded-lg text-black hover:bg-gray-600  group"
-              >
-                <span className="ms-3">Create Subject</span>
-              </Link>
-            </li>
-            <li onClick={secondToggleNavbar}>
-              <Link
-                to={"/admin/create-users"}
-                className="flex items-center p-2  rounded-lg text-black hover:bg-gray-600  group"
-              >
-                <span className="ms-3">Add Teachers</span>
-              </Link>
-            </li>
-            <li onClick={secondToggleNavbar}>
-              <Link
-                to={"/admin/create-student"}
-                className="flex items-center p-2  rounded-lg text-black hover:bg-gray-600  group"
-              >
-                <span className="ms-3">Add Students</span>
-              </Link>
-            </li>
-            <li onClick={secondToggleNavbar}>
-              <Link
-                to={"all-users"}
-                className="flex items-center p-2  rounded-lg text-black hover:bg-gray-600  group"
-              >
-                <span className="ms-3">View Teachers</span>
-              </Link>
-            </li>
-            <li onClick={secondToggleNavbar}>
-              <Link
-                to={"/admin/all-students"}
+                to={"/user/all-students"}
                 className="flex items-center p-2  rounded-lg text-black hover:bg-gray-600  group"
               >
                 <span className="ms-3">View Students</span>
-              </Link>
-            </li>
-            <li onClick={secondToggleNavbar}>
-              <Link
-                to={"/admin/subjects"}
-                className="flex items-center p-2  rounded-lg text-black hover:bg-gray-600  group"
-              >
-                <span className="ms-3">Result</span>
-              </Link>
-            </li>
-            <li onClick={secondToggleNavbar}>
-              <Link
-                to={"/admin/subjects"}
-                className="flex items-center p-2  rounded-lg text-black hover:bg-gray-600  group"
-              >
-                <span className="ms-3">Report</span>
               </Link>
             </li>
           </ul>
@@ -153,6 +99,8 @@ const AdminSideBar = () => {
       </div>
     </>
   );
-};
 
-export default AdminSideBar;
+
+}
+
+export default UserDashboard

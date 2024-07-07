@@ -10,6 +10,7 @@ const AllUsers = () => {
     axios
       .get("/api/v2/user/allusers")
       .then((response) => {
+        console.log(response)
         setUsers(response.data.users);
         setSubjectArray(response.data.subjects);
       })
@@ -47,7 +48,9 @@ const AllUsers = () => {
                   </thead>
                   <tbody>
                     <tr className="border-b hover:bg-gray-200">
-                      <td className="w-[30%] p-3 px-5 align-top ">{user.name}</td>
+                      <td className="w-[30%] p-3 px-5 align-top ">
+                        {user.name}
+                      </td>
                       {/* <td className="p-3 px-5 align-top break-words">
                         {user.email}
                       </td> */}
@@ -59,10 +62,11 @@ const AllUsers = () => {
                               key={subjectIndex}
                               className="border-b-2 last:border-b-0"
                             >
-                              {key.year}
+                              {key.year ? key.year : "-"}
                             </div>
                           ))}
                       </td>
+
                       <td className="w-[30%] p-3 px-5 align-top">
                         {subjectArray
                           .filter((key) => user._id === key.teacherID)
