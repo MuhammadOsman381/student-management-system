@@ -4,7 +4,7 @@ import { Student } from "../models/student.model.js";
 export const getSpecificStudentData = async (req, res) => {
     try {
       const { year } = req.params; 
-      console.log(year);
+
   
       const students = await Student.find({ year }).exec();
       console.log(students);

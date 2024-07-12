@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
+import Helpers from "../config/Helpers";
 
 const Subjects = () => {
   const [subject, setSubject] = useState("");
@@ -43,7 +44,7 @@ const Subjects = () => {
       axios
         .put(`/api/v2/subject/edit/${id}`, {
           subject,
-        })
+        }, Helpers.authHeaders)
         .then(function (response) {
           toast.success(response.data.message);
           setEditRecognizer(false);
@@ -74,7 +75,7 @@ const Subjects = () => {
           {
             subject,
           },
-          { withCredentials: true }
+          Helpers.authHeaders
         )
         .then(function (response) {
           console.log(response)
@@ -101,7 +102,7 @@ const Subjects = () => {
   const deleteSubject = async (id) => {
     setLoader(true);
     try {
-      const response = await axios.delete(`/api/v2/subject/delete/${id}`);
+      const response = await axios.delete(`/api/v2/subject/delete/${id}`, Helpers.authHeaders);
       if (response) {
         setLoader(false);
       }
@@ -139,7 +140,7 @@ const Subjects = () => {
       axios
         .put(`/api/v2/year/edit/${id}`, {
           year,
-        })
+        }, Helpers.authHeaders)
         .then(function (response) {
           toast.success(response.data.message);
           setEditRecognizer(false);
@@ -170,7 +171,7 @@ const Subjects = () => {
           {
             year,
           },
-          { withCredentials: true }
+          Helpers.authHeaders
         )
         .then(function (response) {
           console.log(response)
@@ -198,7 +199,7 @@ const Subjects = () => {
     console.log(id)
     setLoader(true);
     try {
-      const response = await axios.delete(`/api/v2/year/delete/${id}`);
+      const response = await axios.delete(`/api/v2/year/delete/${id}`, Helpers.authHeaders);
       console.log(response)
       if (response) {
         setLoader(false);
@@ -223,26 +224,35 @@ const Subjects = () => {
 
 
   const getSubjects = () => {
+   try {
     axios
-      .get(`/api/v2/subject/get`)
-      .then((response) => {
-        setSubjectArray(response.data.subjects)      
-      })
-      .catch((error) => {
-        toast.error(error.response);
-      });
+    .get(`/api/v2/subject/get`, Helpers.authHeaders)
+    .then((response) => {
+      setSubjectArray(response.data.subjects)      
+    })
+    .catch((error) => {
+      toast.error(error.response);
+    });
+   } catch (error) {
+    console.log(error)
+    
+   }
   };
 
 
   const getYear = () => {
+   try {
     axios
-      .get(`/api/v2/year/get`)
-      .then((response) => {
-        setYearArray(response.data.years)
-      })
-      .catch((error) => {
-        toast.error(error.response);
-      });
+    .get(`/api/v2/year/get`, Helpers.authHeaders)
+    .then((response) => {
+      setYearArray(response.data.years)
+    })
+    .catch((error) => {
+      toast.error(error.response);
+    });
+   } catch (error) {
+    console.log(error)
+   }
   };
 
 

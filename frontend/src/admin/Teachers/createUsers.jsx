@@ -7,6 +7,7 @@ import { MdDelete } from "react-icons/md";
 import { FaAddressBook } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import AddTeachersSubject from "./addTeachersSubject";
+import Helpers from "../../config/Helpers";
 
 const CreateUsers = () => {
   const [teacherID, setTeacherID] = useState('');
@@ -42,7 +43,7 @@ const CreateUsers = () => {
           email,
           password,
         },
-        { withCredentials: true }
+        Helpers.authHeaders
       )
       .then((response) => {
         toast.success(response.data.message);
@@ -60,7 +61,7 @@ const CreateUsers = () => {
 
   const getUsers = () => {
     axios
-      .get("/api/v2/user/allusers", { withCredentials: true })
+      .get("/api/v2/user/allusers",  Helpers.authHeaders)
       .then((response) => {
         setUsers(response.data.users);
         setRefresher((refresher) => !refresher);
@@ -74,7 +75,7 @@ const CreateUsers = () => {
     try {
       const response = await axios.delete(`/api/v2/user/delete/${id}`, {
         withCredentials: true,
-      });
+      }, Helpers.authHeaders);
       if (response) {
         setRefresher((refresher) => !refresher);
       }
@@ -97,7 +98,7 @@ const CreateUsers = () => {
 
   return (
     <>
-      {addTeacherSubjectDisplay === true ? (
+      {addTeacherSubjectDisplay  ? (
         <AddTeachersSubject userid={teacherID} />
       ) : (
         <div className=" max-sm:mt-[10vh] max-lg:mt-[80px]   w-[100%] max-lg:w-[100%]  mt-[4.5vw]   flex flex-col flex-wrap items-center justify-center gap-[2vw]">

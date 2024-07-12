@@ -7,6 +7,7 @@ import { FaEdit } from "react-icons/fa";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import Loader from "../Loader";
+import Helpers from "../../config/Helpers";
 
 const AddTeachersSubject = ({ userid }) => {
   const [year, setYear] = useState("");
@@ -33,35 +34,9 @@ const AddTeachersSubject = ({ userid }) => {
     setSubject(selectedOption.value);
   };
 
-  const getTeacherSubjects = async () => {
-    const teacherID = localStorage.getItem("userid");
-    console.log(teacherID);
-    try {
-      axios
-        .get(`/api/v2/teacher/subject/get/${teacherID}`, {
-          withCredentials: true,
-        })
-        .then((response) => {
-          setTeacherSubArray(response.data.subjects);
-          setArrayChecker(true);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      console.log(response.data.subjects); // Verify fetched data
-    } catch (error) {
-      // toast.error(error.response.data.message); // Assuming error.response.data.message contains the error message
-    }
-  };
-
-  useEffect(() => {
-    getTeacherSubjects();
-    localStorage.setItem("userid", userid);
-  }, [refresher]);
-
   const getSubjects = () => {
     axios
-      .get("/api/v2/subject/get")
+      .get("/api/v2/subject/get", Helpers.authHeaders)
       .then((response) => {
         const subArray = [];
         response.data.subjects.forEach((item) => {
@@ -76,7 +51,7 @@ const AddTeachersSubject = ({ userid }) => {
 
   const getYear = () => {
     axios
-      .get("/api/v2/year/get")
+      .get("/api/v2/year/get", Helpers.authHeaders)
       .then((response) => {
         const yearArray = [];
         response.data.years.forEach((item) => {
@@ -100,10 +75,13 @@ const AddTeachersSubject = ({ userid }) => {
     setSubject(subName);
   };
 
-  const getTeacherName = () => {
-    const teacherID = userid;
+  const getTeacherName = async () => {
+    const teacherID =  userid;
     axios
-      .get(`/api/v2/teacher/subject/get/teacher-name/${teacherID}`)
+      .get(
+        `/api/v2/teacher/subject/get/teacher-name/${teacherID}`,
+        Helpers.authHeaders
+      )
       .then((response) => {
         setTeacherName(response.data.teacher);
         setTeacherSubArray(response.data.subjects);
@@ -113,9 +91,7 @@ const AddTeachersSubject = ({ userid }) => {
       });
   };
 
-  const addSubject = () => {
-    console.log(subject, year);
-
+  const addSubject = async () => {
     const id = userid;
     axios
       .post(
@@ -124,12 +100,10 @@ const AddTeachersSubject = ({ userid }) => {
           subject,
           year,
         },
-        { withCredentials: true }
+        Helpers.authHeaders
       )
       .then(function (response) {
         toast.success(response.data.message);
-        // setSubject("");
-        // setYear("");
         setRefresher((refresher) => !refresher);
       })
       .catch(function (error) {
@@ -145,11 +119,18 @@ const AddTeachersSubject = ({ userid }) => {
 
   const deleteSubject = async (subjectID) => {
     try {
-      const response = await axios.delete(
-        `/api/v2/teacher/subject/delete/${subjectID}`
-      );
-      toast.success(response.data.message);
-      setRefresher(!refresher);
+       axios.delete(
+        `/api/v2/teacher/subject/delete/${subjectID}`,
+        Helpers.authHeaders
+      )
+      .then((response)=>{
+        toast.success(response.data.message);
+        setRefresher(!refresher);
+      })
+      .catch(()=>{
+       console.log(error)
+      })
+
     } catch (error) {
       if (
         error.response &&
@@ -162,6 +143,29 @@ const AddTeachersSubject = ({ userid }) => {
       }
     }
   };
+
+  const getTeacherSubjects = async () => {
+    const teacherID = await userid;
+    try {
+      axios
+        .get(`/api/v2/teacher/subject/get/${teacherID}`, Helpers.authHeaders)
+        .then((response) => {
+          console.log(response);
+          setTeacherSubArray(response.data.subjects);
+          setArrayChecker(true);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      console.log(response.data.subjects);
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  };
+
+  useEffect(() => {
+    getTeacherSubjects();
+  }, [refresher]);
 
   useEffect(() => {
     getTeacherName();
@@ -214,7 +218,7 @@ const AddTeachersSubject = ({ userid }) => {
         </div>
       </div>
 
-      {(teacherSubArray) && (
+      {teacherSubArray?.length > 0 && (
         <div className=" max-lg:w-full w-[70%] max-sm:w-[100%] text-gray-900  bg-gray-200 rounded-lg">
           <div className="p-4 flex ">
             <h1 className="text-3xl">Subjects</h1>
@@ -228,7 +232,7 @@ const AddTeachersSubject = ({ userid }) => {
                   <th className="text-left p-3 px-5">Subject</th>
                 </tr>
                 {teacherSubArray.map((items, index) => {
-                  console.log(items.year)
+                  console.log(items.year);
                   return (
                     <tr key={items._id} className="border-b hover:bg-gray-200 ">
                       <td className=" p-3 px-5">{index + 1}</td>

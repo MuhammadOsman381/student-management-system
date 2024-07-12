@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { useState, useEffect } from "react";
+import Helpers from "../../config/Helpers";
 
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
@@ -8,9 +9,9 @@ const AllUsers = () => {
 
   const getAllUsers = () => {
     axios
-      .get("/api/v2/user/allusers")
+      .get("/api/v2/user/allusers", Helpers.authHeaders)
       .then((response) => {
-        console.log(response)
+        console.log(response);
         setUsers(response.data.users);
         setSubjectArray(response.data.subjects);
       })
@@ -54,18 +55,22 @@ const AllUsers = () => {
                       {/* <td className="p-3 px-5 align-top break-words">
                         {user.email}
                       </td> */}
-                      <td className="w-[25%] p-3 px-5 align-top">
-                        {subjectArray
-                          .filter((key) => user._id === key.teacherID)
-                          .map((key, subjectIndex) => (
-                            <div
-                              key={subjectIndex}
-                              className="border-b-2 last:border-b-0"
-                            >
-                              {key.year ? key.year : "-"}
-                            </div>
-                          ))}
-                      </td>
+                      {subjectArray.length > 0 ? (
+                        <td className="w-[25%] p-3 px-5 align-top">
+                          {subjectArray
+                            .filter((key) => user._id === key.teacherID)
+                            .map((key, subjectIndex) => (
+                              <div
+                                key={subjectIndex}
+                                className="border-b-2 last:border-b-0"
+                              >
+                                {key.year !== "" ? key.year : "-"}
+                              </div>
+                            ))}
+                        </td>
+                      ) : (
+                        <div>no subjects found</div>
+                      )}
 
                       <td className="w-[30%] p-3 px-5 align-top">
                         {subjectArray
@@ -75,7 +80,11 @@ const AllUsers = () => {
                               key={subjectIndex}
                               className="border-b-2 last:border-b-0"
                             >
-                              {key.subject}
+                              {key.subject !== "" && key.subject !== null ? (
+                                key.subject
+                              ) : (
+                                <div>-</div>
+                              )}
                             </div>
                           ))}
                       </td>

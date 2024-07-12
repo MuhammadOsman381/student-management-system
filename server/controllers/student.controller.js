@@ -15,32 +15,64 @@ export const addStudent = async (req, res) => {
 
   const { subjectArray, year, name, studentID } = req.body;
   try {
-    let isStudentExist = await Student.findOne({ studentID });
-    let student;
+    let student = await Student.findOne({ studentID });
 
-    if (isStudentExist) {
-      student = isStudentExist;
-    } else {
-      student = await Student.create({ year, name, studentID });
+    if (!student) {
+      student = new Student({ year, name, studentID, subjects: [] });
+      await student.save();
     }
 
     // Use Promise.all to handle asynchronous operations within map
     const createdSubjects = await Promise.all(
       subjectArray.map(async (subject) => {
-        const createdSubject = await StudentsSubjects.create({
-          subject,
-          studentID: student._id,
-        });
-        student.subjects.push(createdSubject._id);
-        return createdSubject;
+        console.log(subject, year);
+
+        // Find all teacher IDs for the subject and year
+        const teacherSubjects = await TeachersSubjects.find({ subject, year })
+          .lean()
+          .exec();
+        const teacherIds = teacherSubjects.map(
+          (teacherSubject) => teacherSubject.teacherID
+        );
+        console.log(teacherIds);
+
+        // Find teacher names from User collection using teacher IDs
+        const teachers = await User.find({ _id: { $in: teacherIds } })
+          .lean()
+          .exec();
+        const teacherNameList = teachers.map((teacher) => teacher.name);
+        console.log(teacherNameList.name);
+
+        // Create a StudentsSubjects document for each teacher
+        const createdSubjectPromises = teacherNameList.map(
+          async (teacherName) => {
+            const createdSubject = await StudentsSubjects.create({
+              subject,
+              studentID: student._id,
+              teacher: teacherName,
+            });
+
+            student.subjects.push(createdSubject._id);
+
+            return createdSubject;
+          }
+        );
+
+        return Promise.all(createdSubjectPromises);
       })
     );
+
+    const flattenedCreatedSubjects = createdSubjects.flat();
 
     await student.save();
 
     return res.status(201).json({
       success: true,
       message: "Student and subjects are added successfully",
+      data: {
+        student,
+        subjects: flattenedCreatedSubjects,
+      },
     });
   } catch (error) {
     console.error(error);

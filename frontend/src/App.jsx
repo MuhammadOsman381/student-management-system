@@ -12,8 +12,51 @@ import Subjects from "./admin/subjects";
 import AddTeachersSubject from "./admin/Teachers/addTeachersSubject";
 import AllStudents from "./admin/Students/AllStudents";
 import AddMarks from "./users/AddMarks";
+import ViewStudents from "./users/viewStudents";
+import Helpers from "./config/Helpers";
 
 function App() {
+
+
+  const Auth = ({ isAuth = true, isAdmin = false}) => {
+    let user = Helpers.getItem("user", true);
+    let token = Helpers.getItem("token");
+
+    // let currentTime = new Date().getTime();
+    // let minutesPassed = Math.floor((currentTime - loginTime) / (1000 * 60));
+  
+    // Check for session expiration
+    // if (loginTime && minutesPassed > 1440) {
+    //   localStorage.clear();
+    //   Helpers.toast("error", "Session expired. Login again to continue");
+    //   return <Navigate to="/login" />;
+    // } 
+    // For protected routes
+     if (isAuth) {
+      if (!user || !token) {
+        toast.error("Please login to continue");
+        return <Navigate to="/" />;
+      }
+  
+      // Ensure only admins can access admin routes
+      if (isAdmin && user.userType !==  true) {
+        toast.error("Access denied. Only admin allowed.");
+        return <Navigate to="/user/add-marks" />;
+      }
+  
+      // Ensure admins cannot access user routes
+      if (!isAdmin && user.userType === true) {
+       toast.error("Access denied. Admins cannot access user routes.");
+        return <Navigate to="/admin/dashboard" />;
+      }
+
+    } 
+  
+   
+  }
+
+
+
   return (
     <>
       <BrowserRouter>
@@ -37,8 +80,8 @@ function App() {
           </Route>
 
           <Route path="/user" element={<UserDashboard />}>
-          <Route path="/user/all-students" element={<AllStudents />} />
           <Route path="/user/add-marks" element={<AddMarks />} />
+          <Route path="/user/view-students" element={<ViewStudents />} />
           </Route>
         </Routes>
       </BrowserRouter>

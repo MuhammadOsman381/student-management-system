@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import AdminSideBar from "./adminLayout";
 import axios from "axios";
+import toast from "react-hot-toast";
+import Helpers from "../config/Helpers";
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState("");
-  const [students,setStudents] = useState('');
+  const [students, setStudents] = useState("");
 
   const getAllUsers = () => {
     axios
-      .get("/api/v2/user/allusers")
+      .get("/api/v2/user/allusers", Helpers.authHeaders)
       .then((response) => {
         setUsers(response.data.users.length);
       })
@@ -17,22 +19,20 @@ const AdminDashboard = () => {
       });
   };
 
-  const getStudents = () =>
-{
-  axios
-  axios
-  .get("/api/v2/student/allstudents")
-  .then((response) => {
-    setStudents(response.data.students.length);
-  })
-  .catch((error) => {
-    console.log(error);
-  });
-}
+  const getStudents = () => {
+    axios
+      .get("/api/v2/student/allstudents", Helpers.authHeaders)
+      .then((response) => {
+        setStudents(response.data.students.length);
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
+      });
+  };
 
   useEffect(() => {
     getAllUsers();
-    getStudents()
+    getStudents();
   }, []);
 
   return (

@@ -30,7 +30,15 @@ const login = async (req, res) => {
         message: "invalid password",
       });
     }
-    createToken(user, res, `Welcome ${user.name}`, 200);
+    const token = createToken(user, res, `${user.name} registered successfully`, 201);
+    console.log(token)
+    return res.status(200).json({
+      success: true,
+      message: `welcome ${user.name}`,
+      user:user,
+      token:token,
+    });
+
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -68,12 +76,15 @@ const register = async (req, res) => {
       name,
       email,
       password: encryptedPassword,
-      subjects: allSubjects._id,
-      userType: true,
+      userType: false,
     });
     await newUser.save();
-    // Generate token and send response
-    createToken(newUser, res, `${newUser.name} registered successfully`, 201);
+    const token = createToken(newUser, res, `${newUser.name} registered successfully`, 201);
+    res.status(200).json({
+      success: true,
+      message: `${newUser.name} added succesfully`,
+      token:token
+    });
   } catch (error) {
     console.error("Error registering user:", error);
     res.status(500).json({

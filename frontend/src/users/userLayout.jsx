@@ -85,7 +85,7 @@ const UserDashboard = () => {
             </li>
             <li onClick={secondToggleNavbar}>
               <Link
-                to={"/user/all-students"}
+                to={"/user/view-students"}
                 className="flex items-center p-2  rounded-lg text-black hover:bg-gray-600  group"
               >
                 <span className="ms-3">View Students</span>

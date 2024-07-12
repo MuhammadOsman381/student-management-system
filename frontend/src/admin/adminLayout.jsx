@@ -129,7 +129,7 @@ const AdminSideBar = () => {
                 <span className="ms-3">View Students</span>
               </Link>
             </li>
-            <li onClick={secondToggleNavbar}>
+            {/* <li onClick={secondToggleNavbar}>
               <Link
                 to={"/admin/subjects"}
                 className="flex items-center p-2  rounded-lg text-black hover:bg-gray-600  group"
@@ -144,7 +144,7 @@ const AdminSideBar = () => {
               >
                 <span className="ms-3">Report</span>
               </Link>
-            </li>
+            </li> */}
           </ul>
         </div>
       </aside>

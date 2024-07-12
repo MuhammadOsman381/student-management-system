@@ -3,40 +3,40 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
+import Helpers from "../config/Helpers";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const addData = () => {
-    axios
-      .post(
+  const addData = async () => {
+    try {
+      const response = await axios.post(
         "/api/v2/user/login",
-        {
-          email,
-          password,
-        },
-        { withCredentials: true }
-      )
-      .then((response) => {
-        toast.success(response.data.message);
-        console.log(response.data);
-        if (response.data.response.userType == true) {
-          window.location.href = "/admin/dashboard";
-        } else {
-          window.location.href = "/user";
-        }
-      })
-      .catch((error) => {
-        if (error.response.data.errors) {
-          error.response.data.errors.map((items) => {
-            toast.error(items.msg);
-          });
-        } else {
-          toast.error(error.response.data.message);
-        }
-      });
+        { email, password },
+        Helpers.authHeaders
+      );
+      toast.success(response.data.message);
+      console.log(response.data.user.userType);
+      Helpers.setItem("token", response.data.token, false);
+      Helpers.setItem("user", response.data.user, true);
+      if (response.data.user.userType === true) {
+        window.location.href = "/admin/dashboard";
+      } else {
+        window.location.href = "/user/add-marks";
+      }
+    } catch (error) {
+      console.error(error);
+      if (error.response.data.errors) {
+        error.response.data.errors.map((items) => {
+          toast.error(items.msg);
+        });
+      } else {
+        toast.error(error.response.data.message);
+      }
+    }
   };
+
   return (
     <div>
       <div className="flex h-screen w-screen items-center overflow-hidden px-2">

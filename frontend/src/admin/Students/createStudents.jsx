@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import makeAnimated from "react-select/animated";
+import Helpers from "../../config/Helpers";
 
 const CreateStudents = () => {
   const [id, setID] = useState();
@@ -37,15 +38,15 @@ const CreateStudents = () => {
 
   const getSubjectsData = () => {
     axios
-      .get("/api/v2/subject/get")
+      .get("/api/v2/subject/get", Helpers.authHeaders)
       .then((response) => {
-        console.log(response.data.subjects)
-        const subTempArray = []
-        response.data.subjects.map((items)=>{
-          subTempArray.push( { value: items.subject , label: items.subject  },)
-           return subTempArray
-        })
-        setSubjectOptions(subTempArray)
+        console.log(response.data.subjects);
+        const subTempArray = [];
+        response.data.subjects.map((items) => {
+          subTempArray.push({ value: items.subject, label: items.subject });
+          return subTempArray;
+        });
+        setSubjectOptions(subTempArray);
       })
       .catch((error) => {
         console.log(error);
@@ -54,7 +55,7 @@ const CreateStudents = () => {
 
   const getStudents = () => {
     axios
-      .get("/api/v2/student/allstudents")
+      .get("/api/v2/student/allstudents", Helpers.authHeaders)
       .then((response) => {
         setStudentArray(response.data.students);
       })
@@ -62,43 +63,38 @@ const CreateStudents = () => {
         console.log(error);
       });
   };
-  
+
   const handleYearChange = (selectedOption) => {
     setYear(selectedOption.value);
   };
 
-  
-  const getYearData = () =>{
+  const getYearData = () => {
     axios
-    .get("/api/v2/year/get")
-    .then((response) => {
-      // console.log(response.data.years)
-      const yearTempArray = []
-      response.data.years.map((items)=>{
-         yearTempArray.push( { value: items.year , label: items.year  },)
-         return yearTempArray
+      .get("/api/v2/year/get", Helpers.authHeaders)
+      .then((response) => {
+        // console.log(response.data.years)
+        const yearTempArray = [];
+        response.data.years.map((items) => {
+          yearTempArray.push({ value: items.year, label: items.year });
+          return yearTempArray;
+        });
+        setYearOptions(yearTempArray);
       })
-      setYearOptions(yearTempArray)
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
-
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const getSubject = (e) => {
     const selectedSubjectData = e.map((items) => {
       const selectedSubject = items.value;
       return selectedSubject;
     });
-    // console.log(selectedSubjectData)
     setSubjectArray(selectedSubjectData);
   };
 
-
-
   useEffect(() => {
-    getYearData()
+    getYearData();
     getSubjectsData();
     getStudents();
   }, [refresher]);
@@ -113,11 +109,15 @@ const CreateStudents = () => {
 
   const editStudent = () => {
     axios
-      .put(`/api/v2/student/edit-student/${id}`, {
-        name,
-        year,
-        studentID,
-      })
+      .put(
+        `/api/v2/student/edit-student/${id}`,
+        {
+          name,
+          year,
+          studentID,
+        },
+        Helpers.authHeaders
+      )
       .then((response) => {
         toast.success(response.data.message);
         setEditSubjectDisplay(false);
@@ -130,7 +130,7 @@ const CreateStudents = () => {
 
   const deleteStudent = (id) => {
     axios
-      .delete(`/api/v2/student/delete-student/${id}`)
+      .delete(`/api/v2/student/delete-student/${id}`, Helpers.authHeaders)
       .then((response) => {
         toast.success(response.data.message);
         setEditSubjectDisplay(false);
@@ -142,17 +142,21 @@ const CreateStudents = () => {
   };
 
   const addSubjectsAndStudents = () => {
-    console.log(year)
+    console.log(year);
     axios
-      .post("/api/v2/student/add", {
-        subjectArray,
-        year,
-        name,
-        studentID,
-      })
+      .post(
+        "/api/v2/student/add",
+        {
+          subjectArray,
+          year,
+          name,
+          studentID,
+        },
+        Helpers.authHeaders
+      )
       .then((response) => {
         toast.success(response.data.message);
-        setRefresher(!refresher)
+        setRefresher(!refresher);
       })
       .catch((error) => {
         if (error.response.data.errors) {
@@ -176,8 +180,6 @@ const CreateStudents = () => {
               </h2>
 
               <form className="flex flex-col" onSubmit={submitHandler}>
-                
-
                 <input
                   type="number"
                   className="bg-gray-100 text-gray-800 border-0 rounded-md p-2 mb-4 focus:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
@@ -253,7 +255,11 @@ const CreateStudents = () => {
                               className="border-b hover:bg-gray-200 "
                             >
                               <td className=" p-3 px-5">{index + 1}</td>
-                              <td className=" p-3 px-5">{items.name}</td>
+                              <td className="p-3 px-5 w-[10vw]  align-top">
+                                <div className="nameScroller  overflow-auto w-[10vw]">
+                                  {items.name}
+                                </div>
+                              </td>
                               <td className=" p-3 px-5">{items.year}</td>
                               <td className=" p-3 px-5">{items.studentID}</td>
                               <td className="p-3 px-5 flex justify-end">
